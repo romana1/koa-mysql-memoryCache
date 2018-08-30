@@ -1,0 +1,33 @@
+
+
+# This docker-compose starts 2 containers to test koa-mysql-memoryCache service.
+# Due the spicial option we need to pass MySQL database to support large inserts 100k records per 1 time
+# into docker-compose 3 failures of 11 specs.
+# BUT if you use local database all tests are fine.
+
+version: '2.1'
+services:
+  mysql:
+    image: mysql:5.6
+    restart: always
+    healthcheck:
+      test: "exit 0"
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test 
+
+  web:
+    build: .
+    ports:
+      - 8081:8081
+    depends_on:
+        mysql:
+          condition: service_healthy  
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+    environment:    
+      - DATABASE_HOST=mysql

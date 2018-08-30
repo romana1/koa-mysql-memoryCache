@@ -1,0 +1,38 @@
+{
+  "name": "koa-mysql-memoryCache",
+  "version": "1.0.0",
+  "description": "A simple Koajs 2 REST 0 in ES6 style",
+  "author": {
+    "name": "Roman Arefev",
+    "email": "roman.master78@gmail.com"
+  },
+  "directories": {
+    "lib": "./app/controllers",
+    "test": "./test"
+  },
+  "dependencies": {
+    "config": "*",
+    "koa": ">=2.5.1",
+    "koa-body": ">=2.5.x",
+    "koa-router": ">=7.4.x",
+    "memory-cache": "^0.2.0",
+    "mysql": "latest",
+    "optimist": "*"
+  },
+  "devDependencies": {
+    "debug": "latest",
+    "eslint": "^5.4.0",
+    "frisby": "^0.8.5",
+    "get-port": "^3.0.0",
+    "jasmine": "^3.2.0",
+    "optimist": "*"
+  },
+  "scripts": {
+    "start": "node --harmony index.js",
+    "startd": "DEBUG=* node --harmony index.js",
+    "test": "DEBUG=* node --harmony ./node_modules/jasmine/bin/jasmine"
+  },
+  "engines": {
+    "node": ">=8.0.x"
+  }
+}
