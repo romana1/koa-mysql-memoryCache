@@ -1,7 +1,7 @@
 const myDb = require('../app/managers/mysqlManager');
 const config = require('config');
 const debug = require('debug')('test');
-/* eslint-disable */
+
 describe('myDB Tests', function () {
 
     const tableName = config.tableName;
@@ -31,22 +31,23 @@ describe('myDB Tests', function () {
         //EPIPE (Broken pipe): A write on a pipe, socket, or FIFO for which there is no process to read the data. 
         // Commonly encountered at the net and http layers, indicative that the remote side of the 
         //stream being written to has been closed.
-        //After creating a manually a my.cnf file in the root of /etc/mysql directory. Increasing again the max_allowed_packet, 
+        //Increasing again the max_allowed_packet, 
         //it may works in docker! 
         // with default settings can deliver to Docker Mysql only about 30k records.
         // locally it works on 1e5 records.
 
-        for (let i = 0; i < 100000; i++) {
-            insertValues.push(`('${i}-book', '${new Date(Date.now()).toISOString()}', 
-            '${getRandomNumber().toString(6)}', '${getRandomNumber().toString(6)}', '${getRandomNumber().toString(6)}.png')`);
-        }
-      
-        await mysqlPool.queryAsync(
-            `INSERT INTO ${tableName} (title, date, author, description, image) VALUES ${insertValues.join(',')};`).catch(err => {
-                debug('after insert error', err); 
-                return err;
-            });
-
+            for (let i = 0; i < 100000; i++) {
+                insertValues.push(`('${i}-book', '${new Date(Date.now()).toISOString()}', 
+                '${getRandomNumber().toString(6)}', '${getRandomNumber().toString(6)}', '${getRandomNumber().toString(6)}.png')`);
+            }
+               
+            await mysqlPool.queryAsync(
+                `INSERT INTO ${tableName} (title, date, author, description, image) VALUES ${insertValues.join(',')};`).catch(err => {
+                    debug('after insert error', err); 
+                    return err;
+                });
+    
+       
         const description = '\'One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into' +
         'a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly' +
         'domed and divided by arches into stiff sections. The bedding was hardly.\'';
@@ -82,6 +83,9 @@ describe('myDB Tests', function () {
                 debug('after insert error', err); 
                 return err;
             });
+
+        const records = await mysqlPool.queryAsync(`SELECT COUNT(*) from ${tableName};`);
+        debug('Total records', records);
     });
 
     afterAll(async function () {
@@ -226,13 +230,18 @@ describe('myDB Tests', function () {
             .catch(failTest);
 
     }, 2000);
+    /* eslint-disable */
 
     var failTest = function (err) {
         expect(err).toBeUndefined();
         done(); 
     };
-});
+}, 10000);
 
 function getRandomNumber() {
     return Math.trunc(Math.random() * 200000);
+}
+
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
