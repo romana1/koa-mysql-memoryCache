@@ -124,8 +124,9 @@ module.exports = {
             if (book[value]) sqlColumn.push(` ${value} = ?`);
             return book[value];
         });
+        insertValues.push(id.id);
      
-        const sql = mysql.format(`UPDATE ${config.tableName} SET ${sqlColumn.join(',')} WHERE id = ${id.id}`, insertValues.filter(Boolean));
+        const sql = mysql.format(`UPDATE ${config.tableName} SET ${sqlColumn.join(',')} WHERE id = ?`, insertValues.filter(Boolean));
        debug('update sql string', sql, insertValues, book);
         const{message} = await mysqlPoolInstance.queryAsync(sql).catch(err => {
             debug('Errors appeared during db request on Update', err);
